@@ -1,0 +1,20 @@
+- name: Ensure ansible group exits
+  become: yes
+  group: name=ansible state=present
+
+- name: Setup ansible deploy users
+  become: yes
+  user: name=ansible comment="Ansible" groups="ansible,sudo"
+
+- name: Setup ssh keys for ansible
+  become: yes
+  authorized_key: user=ansible key="{{item}}"
+  with_file:
+    - keys/elance.site.id_rsa.pub
+
+- name: Set ansible permissions in /etc/sudoers
+  become: yes
+  lineinfile: "dest=/etc/sudoers
+              state=present
+              line='ansible ALL=(ALL) NOPASSWD:ALL'
+              validate='/usr/sbin/visudo -cf %s'"

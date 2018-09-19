@@ -1,0 +1,9 @@
+- hosts: frontend
+  roles: 
+  - update-server
+  - setup-users
+  - enable-ufw
+  - setup-nginx
+  - setup-node
+  - setup-git
+  - setup-letsencrypt

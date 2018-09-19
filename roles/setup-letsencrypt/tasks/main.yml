@@ -1,0 +1,18 @@
+- name: Install certbot dependency - software-properties-common
+  become: yes
+  apt: name=software-properties-common state=present
+
+- name: Add certbot ppa
+  become: yes
+  apt_repository: repo='ppa:certbot/certbot' state=present
+
+- name: Run apt update
+  become: yes
+  apt: 
+    update_cache: yes
+
+- name: Install certbot for Nginx
+  become: yes
+  apt:
+    name: python-certbot-nginx
+    state: present
