@@ -72,7 +72,7 @@ Well to run a playbook we follow this format:
 > ansible-playbook -i path/to/inventory playbookName.yml --extra-vars "addAnyExtraVarsNeeded=Here"
 ```
 
-### 7. WHat is this vagrant file?
+### 7. What is this vagrant file?
 This is a testing environment set out to test the app locally in a server like environment. To run it:
 1. Install [VirtualBox](https://www.virtualbox.org/)
 2. Install [Vagrant](https://www.vagrantup.com/)
