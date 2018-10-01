@@ -1,0 +1,8 @@
+[Unit]
+Description=Elance Backend Node Server
+After=network.target
+
+[Service]
+Type=simple
+ExecStart=/bin/sh /home/{{service}}/src/start.sh
+User=backend

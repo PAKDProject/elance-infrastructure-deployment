@@ -1,0 +1,68 @@
+- name: Create {{service}} group
+  become: yes
+  group: name={{service}} state=present
+
+- name: Create {{service}} user
+  become: yes
+  user: name={{service}} group={{service}}
+
+- name: Ensure .ssh directory exists
+  become: yes
+  become_user: "{{service}}"
+  file: path=/home/{{service}}/.ssh state=directory
+
+- name: ensure github.com is a known host
+  become: yes
+  lineinfile:
+    dest: /home/{{service}}/.ssh/known_hosts
+    create: yes
+    state: present
+    line: "{{ lookup('pipe', 'ssh-keyscan -t rsa github.com') }}"
+    regexp: "^github\\.com"
+
+- name: Copy key for github
+  become: yes
+  become_user: "{{service}}"
+  copy: content={{github.privateKey.stage}} dest=/home/{{service}}/.ssh/id_rsa mode=0400 force=yes
+
+- name: Setup ssh for the key
+  become: yes
+  become_user: "{{service}}"
+  shell: |
+    eval "$(ssh-agent -s)"
+    ssh-add -k ~/.ssh/id_rsa
+
+- name: Reset changes in repo
+  become: yes
+  become_user: "{{service}}"
+  shell: |
+    cd /home/{{service}}/src
+    git reset --hard
+
+- name: Clone repo
+  become: yes
+  become_user: "{{service}}"
+  git: update=yes version=HEAD repo=ssh://git@github.com/{{reponame}}.git dest=/home/{{service}}/src
+
+- name: NPM Install
+  become: yes
+  become_user: "{{service}}"
+  shell: |
+    cd ~/src
+    npm install
+
+- name: Copy startfile to src
+  become: yes
+  template: src=start dest=/home/{{service}}/src/start.sh mode=0777
+
+- name: Copy service file to make sure this is registered as a service
+  become: yes
+  template: src=backend.service dest=/etc/systemd/system/{{service}}.service mode=0644 force=yes
+
+- name: Reinit Systemctl
+  become: yes
+  shell: systemctl daemon-reload
+
+- name: Ensure API is running
+  become: yes
+  service: name={{service}} state=started

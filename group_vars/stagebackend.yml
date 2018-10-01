@@ -1,0 +1,5 @@
+urls:
+  api: "stage.api.elance.site"
+  front: "stage.elance.site"
+service: backend
+port: 3001

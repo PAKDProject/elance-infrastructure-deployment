@@ -1,0 +1,7 @@
+- hosts: backend
+  roles: 
+    - backend
+
+- hosts: stagebackend:productionbackend
+  roles: 
+    - backend-ssl

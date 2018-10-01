@@ -1,5 +1,5 @@
 [frontend]
-dev.elance.site
+dev.elance.site ansible_python_interpreter="/usr/bin/python3"
 
 [backend]
-dev.api.elance.site
+dev.api.elance.site ansible_python_interpreter="/usr/bin/python3"

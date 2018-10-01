@@ -1,18 +1,30 @@
-- name: Install certbot dependency - software-properties-common
+- name: Install dependencies
+  apt: name={{ item }} state=latest
   become: yes
-  apt: name=software-properties-common state=present
+  with_items:
+    - python
+    - python-dev
+    - gcc
+    - dialog
+    - libaugeas0
+    - augeas-lenses
+    - libssl-dev
+    - libffi-dev
+    - ca-certificates
+    - python-pip
+    - python-virtualenv
+    - git
+    - libpython-dev
+    - zlib1g-dev
 
-- name: Add certbot ppa
+- name: Get certbot
   become: yes
-  apt_repository: repo='ppa:certbot/certbot' state=present
+  get_url: url="https://dl.eff.org/certbot-auto" dest=/usr/bin
 
-- name: Run apt update
+- name: Set certbot mode
   become: yes
-  apt: 
-    update_cache: yes
+  file: path=/usr/bin/certbot-auto mode=0750
 
-- name: Install certbot for Nginx
+- name: Ensure webroot exists
   become: yes
-  apt:
-    name: python-certbot-nginx
-    state: present
+  file: path=/var/www/well-known state=directory mode=0755

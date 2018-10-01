@@ -1,5 +1,11 @@
 [frontend]
-stage.elance.site
+stage.elance.site ansible_python_interpreter="/usr/bin/python3"
 
 [backend]
-stage.api.elance.site
+stage.api.elance.site ansible_python_interpreter="/usr/bin/python3"
+
+[stagefrontend]
+stage.elance.site ansible_python_interpreter="/usr/bin/python3"
+
+[stagebackend]
+stage.api.elance.site ansible_python_interpreter="/usr/bin/python3"

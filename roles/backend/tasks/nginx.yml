@@ -1,0 +1,17 @@
+- name: Ensure nginx is on and running
+  become: yes
+  service: name=nginx state=started
+
+- name: Copy passwd file
+  become: yes
+  copy: content={{password_for_nginx}} dest=/etc/nginx/sites-available/.htpasswd
+
+- name: Copy http nginx config
+  become: yes
+  template: src={{service}}.http.conf dest=/etc/nginx/sites-available/{{service}}.http.conf mode=0644 force=yes
+
+- name: Add symlink to sites-enabled
+  become: yes
+  file: src=/etc/nginx/sites-available/{{service}}.http.conf dest=/etc/nginx/sites-enabled/{{service}}.http state=link
+  notify:
+    - Restart Nginx
